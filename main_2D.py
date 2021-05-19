@@ -1,9 +1,10 @@
+from utils import *
 from PIL import Image
 import numpy as np
 
 class Ascii2D:
 
-    GRADIENTS = ['.', '-', '/', 'r', 'L', 'o', '*', "'", '_', '|', 'c', 'C', 'a', '&', '`', '+', '(', 'v', 'J', 'h', '%', ',', '<', ')', 'u', 'U', 'k', '$', '^', 'i', '1', 'n', 'Y', 'b', '#', ':', '?', ']', 'x', 'X', 'd', '@']
+    GRADIENTS = Constants.GRADIENTS
 
     def rvb(self,color:int):
         """Returns symbol using color code given by image.getpixel
