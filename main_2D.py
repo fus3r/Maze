@@ -23,9 +23,9 @@ def main(longueur,largeur,filename,ext):
     
     long,larg=list(np.linspace(0, long, longueur,dtype=int)),list(np.linspace(0, larg, largeur,dtype=int))
 
-    print(long,larg)
+    
     modified = [[0]*longueur for _ in range(largeur)]
-    #print(modified)
+    
 
 
     del long[-1]
@@ -48,4 +48,4 @@ def main(longueur,largeur,filename,ext):
 
 
 
-main(200,100,'zemmour','jpg')
+main(210,100,'4','png')
