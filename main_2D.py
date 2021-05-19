@@ -19,15 +19,13 @@ class Ascii2D:
         Returns:
             symbol (str): Symbol
         """
-
-        try:
-            symbol = self.GRADIENTS[(color*len(self.GRADIENTS)//255)]
-        except:
-            symbol = self.GRADIENTS[-1]
+        ind=color*(len(self.GRADIENTS)-1)/255
+        assert ind<len(self.GRADIENTS), "GORGE"
+        symbol = self.GRADIENTS[int(ind)]
         return symbol
 
 
-    def pic_to_matrix(self,longueur:int,largeur:int,filename:str,ext:str):
+    def pic_to_matrix2(self,longueur:int,largeur:int,filename:str,ext:str):
         image = Image.open(f'img/{filename}.{ext}')
         image = image.convert('1')
         image.save(f'img/{filename}_black.{ext}')
@@ -49,36 +47,14 @@ class Ascii2D:
 
         return matrix
 
-    """
-    def pic_to_matrix2(self,longueur:int,largeur:int,filename:str,ext:str):
+    def pic_to_matrix(self,longueur:int,largeur:int,filename:str,ext:str):
         image = Image.open(f'img/{filename}.{ext}')
         image = image.convert('1')
         image.save(f'img/{filename}_black.{ext}')
         image = Image.open(f'img/{filename}_black.{ext}')
-        
 
+        return np.asarray(image.resize((longueur, largeur), resample=Image.BILINEAR))
 
-        long,larg = image.size
-        print(long,larg)
-
-        image = image.resize((longueur,largeur), Image.ANTIALIAS)
-        image.save(f'img/{filename}_black.{ext}')
-
-        image = Image.open(f'img/{filename}_black.{ext}')
-        long,larg = image.size
-        
-        print(long,larg)
-        
-
-
-        I = np.asarray(image)
-        matrix = Image.fromarray(np.uint8(I))
-        
-        pixels = list(image.getdata())
-
-
-        return pixels
-    """
 
     def transform(self,matrix:list):
         """Transform image (any extension) to ASCII Art
@@ -93,20 +69,22 @@ class Ascii2D:
             None:
         """
 
+        w, h = len(matrix), len(matrix[0])
+        res=['' for j in range(w)] #TODO creer avec np
         #assert (longueur<long and largeur<larg), "Invalid width or length"
-        longueur = len(matrix[0])
-        largeur = len(matrix)
+        longueur = len(matrix)
+        largeur = len(matrix[0])
 
         #modified = [[0]*longueur for _ in range(largeur)]
     
         
-        for indexModified_longueur in range(longueur):
-            for indexModified_largeur in range(largeur):
-                matrix[indexModified_largeur][indexModified_longueur] = self.rvb(self,matrix[indexModified_largeur][indexModified_longueur])
+        for i in range(longueur):
+            for j in range(largeur):
+                res[i] += self.rvb(self, matrix[i][j])
                 
         
         
-        return matrix
+        return res
 
     def display(self,modified_matrix):
         for i in modified_matrix:
