@@ -21,7 +21,7 @@ class Ascii2D:
         """
 
         try:
-            symbol = self.GRADIENTS[(color*len(self.GRADIENTS)//255)]
+            symbol = self.GRADIENTS[int(color*len(self.GRADIENTS)/255)]
         except:
             symbol = self.GRADIENTS[-1]
         return symbol
@@ -126,15 +126,15 @@ class Ascii2D:
             y = 100
             for i in modified_matrix:
                 text_surface, rect = GAME_FONT.render("".join([str(k) for k in i]), (255, 255, 255))
-                screen.blit(text_surface, (0, y))
-                y+=10
+                screen.blit(text_surface, (200, y))
+                y+=12
 
             pg.display.flip()
 
         pg.quit()
         
         
-matrix = Ascii2D.pic_to_matrix(Ascii2D,210,100,'zemmour','jpg')
+matrix = Ascii2D.pic_to_matrix(Ascii2D,210,100,'test2','png')
 modified_matrix = Ascii2D.transform(Ascii2D,matrix)
 Ascii2D.display(Ascii2D,modified_matrix)
 
