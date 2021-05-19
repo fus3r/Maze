@@ -1,11 +1,14 @@
 from utils import *
 from PIL import Image
 import numpy as np
-#import pygame as pg
+import pygame as pg
+import pygame.freetype as freetype
 
 class Ascii2D:
 
     GRADIENTS = Constants.GRADIENTS
+    HEIGHT = Constants.HEIGHT
+    WIDTH = Constants.WIDTH
 
     def rvb(self,color:int):
         """Returns symbol using color code given by image.getpixel
@@ -101,16 +104,38 @@ class Ascii2D:
             for indexModified_largeur in range(largeur):
                 matrix[indexModified_largeur][indexModified_longueur] = self.rvb(self,matrix[indexModified_largeur][indexModified_longueur])
                 
-            
-
-        for i in matrix:
-            print("".join([str(k) for k in i]))
         
-        return None
+        
+        return matrix
+
+    def display(self,modified_matrix):
+        for i in modified_matrix:
+            print("".join([str(k) for k in i]))
+
+        pg.init()
+        screen = pg.display.set_mode((self.WIDTH, self.HEIGHT))
+        GAME_FONT = freetype.SysFont('Consolas', 12, bold=True)
+        running =  True
+
+        while running:
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    running = False
+
+            screen.fill((0,0,0))
+            y = 100
+            for i in modified_matrix:
+                text_surface, rect = GAME_FONT.render("".join([str(k) for k in i]), (255, 255, 255))
+                screen.blit(text_surface, (0, y))
+                y+=10
+
+            pg.display.flip()
+
+        pg.quit()
+        
+        
+matrix = Ascii2D.pic_to_matrix(Ascii2D,210,100,'zemmour','jpg')
+modified_matrix = Ascii2D.transform(Ascii2D,matrix)
+Ascii2D.display(Ascii2D,modified_matrix)
 
 
-
-
-
-matrice = Ascii2D.pic_to_matrix(Ascii2D,210,100,'zemmour','jpg')
-Ascii2D.transform(Ascii2D,matrice)
