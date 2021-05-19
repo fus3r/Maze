@@ -53,7 +53,10 @@ class Ascii2D:
         image.save(f'img/{filename}_black.{ext}')
         image = Image.open(f'img/{filename}_black.{ext}')
 
-        return np.asarray(image.resize((longueur, largeur), resample=Image.BILINEAR))
+        return np.asarray(image.resize((longueur, largeur), resample=3))
+
+    def pic_to_matrix3(self,longueur:int,largeur:int,image):
+        return np.asarray(image.resize((longueur, largeur), resample=3))
 
 
     def transform(self,matrix:list):
