@@ -5,24 +5,25 @@ GRADIENTS = ['.', '-', '/', 'r', 'L', 'o', '*', "'", '_', '|', 'c', 'C', 'a', '&
 
 def rvb(color):
     try:
-        a = GRADIENTS[(color*len(GRADIENTS)//255)]
+        symbol = GRADIENTS[(color*len(GRADIENTS)//255)]
     except:
-        a = GRADIENTS[-1]
-    return a
+        symbol = GRADIENTS[-1]
+    return symbol
 
 
 
-def main(longueur,largeur):
-    image = Image.open('img/test2.png')
+def main(longueur,largeur,filename,ext):
+    image = Image.open(f'img/{filename}.{ext}')
     image = image.convert('1')
-    image.save('img/test2_black.jpg')
-    image = Image.open('img/test2_black.jpg')
+    image.save(f'img/{filename}_black.{ext}')
+    image = Image.open(f'img/{filename}_black.{ext}')
     
     long,larg = image.size
     
+    
     long,larg=list(np.linspace(0, long, longueur,dtype=int)),list(np.linspace(0, larg, largeur,dtype=int))
 
-    
+    print(long,larg)
     modified = [[0]*longueur for _ in range(largeur)]
     #print(modified)
 
@@ -30,24 +31,21 @@ def main(longueur,largeur):
     del long[-1]
     del larg[-1]
     
-    for i,L in zip(range(longueur),long):
-        for j,l in zip(range(largeur),larg):
+    for indexModified_longueur,indexColor_longueur in zip(range(longueur),long):
+        for indexModified_largeur,indexColor_largeur in zip(range(largeur),larg):
             #print(L,l)
-            color = image.getpixel((int(L),int(l)))
-            print(f'{i} = {len(modified)}; {j} = {len(modified[i])} = {len(modified[0])}')
-            modified[j][i] = rvb(color)
+            #print(int(indexColor_longueur),int(indexColor_largeur))
+            color = image.getpixel((int(indexColor_longueur),int(indexColor_largeur)))
+            #print(f'{i} = {len(modified)}; {j} = {len(modified[i])} = {len(modified[0])}')
+            modified[indexModified_largeur][indexModified_longueur] = rvb(color)
             
         
 
     for i in modified:
-        o = ""
-        for j in i:
-            o+=str(j)
-        
-        print(o)
+        print("".join([str(k) for k in i]))
     
     return None
 
 
 
-main(100,100)
+main(200,100,'zemmour','jpg')
