@@ -3,7 +3,6 @@ import numpy as np
 
 class Ascii2D:
 
-
     GRADIENTS = ['.', '-', '/', 'r', 'L', 'o', '*', "'", '_', '|', 'c', 'C', 'a', '&', '`', '+', '(', 'v', 'J', 'h', '%', ',', '<', ')', 'u', 'U', 'k', '$', '^', 'i', '1', 'n', 'Y', 'b', '#', ':', '?', ']', 'x', 'X', 'd', '@']
 
     def rvb(self,color:int):
@@ -57,7 +56,7 @@ class Ascii2D:
         for indexModified_longueur,indexColor_longueur in zip(range(longueur),long):
             for indexModified_largeur,indexColor_largeur in zip(range(largeur),larg):
                 color = image.getpixel((int(indexColor_longueur),int(indexColor_largeur)))
-                modified[indexModified_largeur][indexModified_longueur] = self.rvb(color)
+                modified[indexModified_largeur][indexModified_longueur] = self.rvb(self,color)
                 
             
 
@@ -68,4 +67,4 @@ class Ascii2D:
 
 
 
-Ascii2D.transform(210,100,'test2','png')
+Ascii2D.transform(Ascii2D,210,100,'test2','png')
