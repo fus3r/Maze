@@ -2,7 +2,6 @@ from utils import *
 from PIL import Image
 import numpy as np
 import pygame as pg
-import pygame.freetype as freetype
 
 class Ascii2D:
 
@@ -10,7 +9,7 @@ class Ascii2D:
     HEIGHT = Constants.HEIGHT
     WIDTH = Constants.WIDTH
     LARGEUR_DIF = Constants.LARGEUR_DIF
-
+    GAME_FONT = Constants.GAME_FONT
 
     def rvb(self,color:int):
         """Returns symbol using color code given by image.getpixel
@@ -38,20 +37,9 @@ class Ascii2D:
         long,larg = image.size
         largeur = int(longueur*larg/long)-self.LARGEUR_DIF
 
-        long,larg=list(np.linspace(0, long, longueur,dtype=int)),list(np.linspace(0, larg, largeur,dtype=int))
-        del long[-1]
-        del larg[-1]
+        long,larg=list(np.linspace(0, long-1, longueur,dtype=int)),list(np.linspace(0, larg-1, largeur,dtype=int))
 
-        matrix = []
-        lst = []
-        for indexColor_largeur in larg:
-            for indexColor_longueur in long:
-                color = image.getpixel((int(indexColor_longueur),int(indexColor_largeur)))
-                lst.append(color)
-            matrix.append(lst)
-            lst=[]
-
-        return matrix
+        return [[image.getpixel((int(indexColor_longueur),int(indexColor_largeur))) for indexColor_longueur in long] for indexColor_largeur in larg]
 
     """
     def pic_to_matrix2(self,longueur:int,largeur:int,filename:str,ext:str):
@@ -97,7 +85,6 @@ class Ascii2D:
 
         pg.init()
         screen = pg.display.set_mode((self.WIDTH, self.HEIGHT))
-        GAME_FONT = freetype.SysFont('Consolas', 12, bold=True)
         running =  True
 
         while running:
@@ -108,7 +95,7 @@ class Ascii2D:
             screen.fill((0,0,0))
             y = 100
             for i in modified_matrix:
-                text_surface, rect = GAME_FONT.render("".join([str(k) for k in i]), (255, 255, 255))
+                text_surface, rect = self.GAME_FONT.render("".join([str(k) for k in i]), (255, 255, 255))
                 screen.blit(text_surface, (200, y))
                 y+=12
 
