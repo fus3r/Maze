@@ -87,26 +87,25 @@ class Ascii2D:
         screen = pg.display.set_mode((self.WIDTH, self.HEIGHT))
         running =  True
 
-        while running:
-            for event in pg.event.get():
-                if event.type == pg.QUIT:
-                    running = False
 
-            screen.fill((0,0,0))
-            y = 100
-            for i in modified_matrix:
-                text_surface, rect = self.GAME_FONT.render("".join([str(k) for k in i]), (255, 255, 255))
-                screen.blit(text_surface, (200, y))
-                y+=12
 
-            pg.display.flip()
+        screen.fill((0,0,0))
+        y = 100
+        for i in modified_matrix:
+            text_surface,_ = self.GAME_FONT.render("".join([str(k) for k in i]), (255, 255, 255))
+            screen.blit(text_surface, (200, y))
+            y+=12
 
-        pg.quit()
+        pg.display.flip()
+
+        screen.fill((0,0,0))
+        #pg.quit()
         
-
+'''
 dimensions = Images.dimensions(Images,'zemmour','jpg')
-matrix = Ascii2D.pic_to_matrix(Ascii2D,210,'test2','png')
+matrix = Ascii2D.pic_to_matrix(Ascii2D,210,'zemmour','jpg')
 modified_matrix = Ascii2D.transform(Ascii2D,matrix)
 Ascii2D.display(Ascii2D,modified_matrix)
 
+'''
 

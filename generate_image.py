@@ -1,4 +1,5 @@
 from scipy.spatial.transform import Rotation as R
+from utils import *
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
@@ -59,14 +60,28 @@ img = generate_image(.4, 5.5, 100, 100)
 #img = Image.fromarray(np.asarray(img))
 plt.show()
 
+from main_2D import Ascii2D
+
+
 i=0
 while True:
     i+=1
     img=generate_image(.4+i*.025, 5.5+i*.01, 200, 200)
+    array = np.array(img, dtype=np.uint8)
+    new_image = Image.fromarray(array)
+    new_image.save(f'img/generate_img/new{i}.png')
+    matrix = Ascii2D.pic_to_matrix(Ascii2D,200,f'generate_img/new{i}','png')
+    modified_matrix = Ascii2D.transform(Ascii2D,matrix)
+    Ascii2D.display(Ascii2D,modified_matrix)
+
+    '''
     plt.imshow(img)
     plt.imshow(img, cmap='gray')
     plt.pause(.01)
+    '''
     if i >=20:
         break
+
+Files.clear_folder(Files.path_join(['img','generate_img']),'generate_img')
     
     
