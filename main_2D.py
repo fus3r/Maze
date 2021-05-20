@@ -10,7 +10,7 @@ class Ascii2D:
     HEIGHT = Constants.HEIGHT
     WIDTH = Constants.WIDTH
 
-    def rvb(self,color:int):
+    def rvb(self,color:int, mode=0):
         """Returns symbol using color code given by image.getpixel
 
         Args:
@@ -20,7 +20,11 @@ class Ascii2D:
             symbol (str): Symbol
         """
         ind=color*(len(self.GRADIENTS)-1)/255
-        assert ind<len(self.GRADIENTS), "GORGE"
+        if mode==1:
+            assert color!=1 or color!=0, f"color = {color}"
+            ind=color*(len(self.GRADIENTS)-1)
+            assert ind==int(ind), "RVB mode problem"
+        assert ind<=len(self.GRADIENTS)-1, "trhythdrtjx"
         symbol = self.GRADIENTS[int(ind)]
         return symbol
 
@@ -59,7 +63,7 @@ class Ascii2D:
         return np.asarray(image.resize((longueur, largeur), resample=2))
 
 
-    def transform(self,matrix:list):
+    def transform(self,matrix:list, mode=0):
         """Transform image (any extension) to ASCII Art
 
         Args:
@@ -67,31 +71,36 @@ class Ascii2D:
             largeur (int): Width desired
             filename (str): Filename
             ext (str): Filename extension
+            mode (int): type d'encodage de pixels
+                0: [0;255]
+                1: [|0, 1|]
 
         Returns:
             None:
         """
 
-        w, h = len(matrix), len(matrix[0])
-        res=['' for j in range(w)] #TODO creer avec np
+        h, w = len(matrix), len(matrix[0])
+        res=['' for j in range(h)] #TODO creer avec np
         #assert (longueur<long and largeur<larg), "Invalid width or length"
-        longueur = len(matrix)
-        largeur = len(matrix[0])
 
         #modified = [[0]*longueur for _ in range(largeur)]
-    
+        if mode==1:
+            coef=255
         
-        for i in range(longueur):
-            for j in range(largeur):
-                res[i] += self.rvb(self, matrix[i][j])
-                
-        
-        
+        for j in range(h):
+            for i in range(w):
+                res[j] += self.rvb(self, matrix[j][i], mode=mode)
         return res
 
+    def display_image(slef, image):
+        assert type(int(image.mode))==int
+        matrix = Ascii2D.pic_to_matrix3(Ascii2D,200, 200, image)
+        modified_matrix = Ascii2D.transform(Ascii2D,matrix, mode=int(image.mode))
+        Ascii2D.display(Ascii2D,modified_matrix)
+        
     def display(self,modified_matrix):
-        for i in modified_matrix:
-            print("".join([str(k) for k in i]))
+        """for i in modified_matrix:
+            print("".join([str(k) for k in i]))"""
 
         pg.init()
         screen = pg.display.set_mode((self.WIDTH, self.HEIGHT))
@@ -106,17 +115,19 @@ class Ascii2D:
             screen.fill((0,0,0))
             y = 100
             for i in modified_matrix:
-                text_surface, rect = GAME_FONT.render("".join([str(k) for k in i]), (255, 255, 255))
-                screen.blit(text_surface, (0, y))
-                y+=10
+                text_surface, rect = GAME_FONT.render(" "*0+i, (255, 255, 255)) #TODO : ajouter des couleurs et transparence !!!!
+                screen.blit(text_surface, (100, y))
+                y+=5
 
             pg.display.flip()
 
         pg.quit()
         
-        
-matrix = Ascii2D.pic_to_matrix(Ascii2D,480//2,200//2,'zemmour','jpg')
-modified_matrix = Ascii2D.transform(Ascii2D,matrix)
-Ascii2D.display(Ascii2D,modified_matrix)
 
+
+filename='test2.png'
+image = Image.open(f'img/{filename}')
+image = image.convert('1')
+
+Ascii2D.display_image(Ascii2D,image)
 
