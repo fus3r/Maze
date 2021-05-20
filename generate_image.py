@@ -82,6 +82,6 @@ while True:
     if i >=20:
         break
 
-Files.clear_folder(Files.path_join(['img','generate_img']),'generate_img')
+Files.clear_folder(Files.path_join(['img','generate_img']))
     
     

@@ -21,7 +21,7 @@ class Files:
         return os.path.join('',*lst)
 
 
-    def clear_folder(path,new):
+    def clear_folder(path):
         import shutil,os
         """
         import os, glob
@@ -30,4 +30,4 @@ class Files:
             os.remove(f)
         """
         shutil.rmtree(path)
-        os.mkdir(new)
+        os.mkdir(path)
