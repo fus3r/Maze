@@ -1,6 +1,7 @@
 class Constants:
     import pygame.freetype as freetype
     freetype.init()
+    
     WIDTH = 1920
     HEIGHT = 1080
     LARGEUR_DIF = 15 #Check issue
@@ -13,3 +14,20 @@ class Images:
         from PIL import Image
         img = Image.open(f'img/{filename}.{extension}')
         return img.size
+
+class Files:
+    def path_join(lst:list):
+        import os
+        return os.path.join('',*lst)
+
+
+    def clear_folder(path,new):
+        import shutil,os
+        """
+        import os, glob
+        files = glob.glob(f'{path}*')
+        for f in files:
+            os.remove(f)
+        """
+        shutil.rmtree(path)
+        os.mkdir(new)
