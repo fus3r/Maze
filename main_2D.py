@@ -107,8 +107,7 @@ class Ascii2D:
             y+=12
 
 
-        pg.quit()
-        
+        pg.display.flip()
 
         pg.display.flip()
 
