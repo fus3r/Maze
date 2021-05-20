@@ -9,6 +9,8 @@ class Ascii2D:
     GRADIENTS = Constants.GRADIENTS
     HEIGHT = Constants.HEIGHT
     WIDTH = Constants.WIDTH
+    LARGEUR_DIF = Constants.LARGEUR_DIF
+
 
     def rvb(self,color:int):
         """Returns symbol using color code given by image.getpixel
@@ -27,13 +29,15 @@ class Ascii2D:
         return symbol
 
 
-    def pic_to_matrix(self,longueur:int,largeur:int,filename:str,ext:str):
+    def pic_to_matrix(self,longueur:int,filename:str,ext:str):
         image = Image.open(f'img/{filename}.{ext}')
         image = image.convert('1')
         image.save(f'img/{filename}_black.{ext}')
         image = Image.open(f'img/{filename}_black.{ext}')
         
         long,larg = image.size
+        largeur = int(longueur*larg/long)-self.LARGEUR_DIF
+
         long,larg=list(np.linspace(0, long, longueur,dtype=int)),list(np.linspace(0, larg, largeur,dtype=int))
         del long[-1]
         del larg[-1]
@@ -112,8 +116,9 @@ class Ascii2D:
 
         pg.quit()
         
-        
-matrix = Ascii2D.pic_to_matrix(Ascii2D,210,100,'test2','png')
+
+dimensions = Images.dimensions(Images,'zemmour','jpg')
+matrix = Ascii2D.pic_to_matrix(Ascii2D,210,'test2','png')
 modified_matrix = Ascii2D.transform(Ascii2D,matrix)
 Ascii2D.display(Ascii2D,modified_matrix)
 
