@@ -115,7 +115,7 @@ class Ascii2D:
             screen.fill((0,0,0))
             y = 100
             for i in modified_matrix:
-                text_surface, rect = GAME_FONT.render(" "*0+i, (255, 255, 255)) #TODO : ajouter des couleurs et transparence !!!!
+                text_surface, rect = GAME_FONT.render(i, (255, 255, 255)) #TODO : ajouter des couleurs et transparence !!!!
                 screen.blit(text_surface, (100, y))
                 y+=5
 
@@ -125,9 +125,9 @@ class Ascii2D:
         
 
 
-filename='test2.png'
-image = Image.open(f'img/{filename}')
-image = image.convert('1')
-
-Ascii2D.display_image(Ascii2D,image)
+if __name__=='__main__':
+    filename='test2.png'
+    image = Image.open(f'img/{filename}')
+    image = image.convert('1')
+    Ascii2D.display_image(Ascii2D,image)
 
