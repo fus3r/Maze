@@ -118,7 +118,7 @@ class Ascii2D:
 
 dimensions = Images.dimensions(Images,'test2','png')
 print(dimensions)
-matrix = Ascii2D.pic_to_matrix(Ascii2D,200,'test2','jpg')
+matrix = Ascii2D.pic_to_matrix(Ascii2D,200,'test2','png')
 modified_matrix = Ascii2D.transform(Ascii2D,matrix)
 Ascii2D.display(Ascii2D,modified_matrix)
 
