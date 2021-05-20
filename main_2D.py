@@ -53,10 +53,10 @@ class Ascii2D:
         image.save(f'img/{filename}_black.{ext}')
         image = Image.open(f'img/{filename}_black.{ext}')
 
-        return np.asarray(image.resize((longueur, largeur), resample=3))
+        return np.asarray(image.resize((longueur, largeur), resample=2))
 
     def pic_to_matrix3(self,longueur:int,largeur:int,image):
-        return np.asarray(image.resize((longueur, largeur), resample=3))
+        return np.asarray(image.resize((longueur, largeur), resample=2))
 
 
     def transform(self,matrix:list):
@@ -115,7 +115,7 @@ class Ascii2D:
         pg.quit()
         
         
-matrix = Ascii2D.pic_to_matrix(Ascii2D,210,100,'zemmour','jpg')
+matrix = Ascii2D.pic_to_matrix(Ascii2D,480//2,200//2,'zemmour','jpg')
 modified_matrix = Ascii2D.transform(Ascii2D,matrix)
 Ascii2D.display(Ascii2D,modified_matrix)
 
