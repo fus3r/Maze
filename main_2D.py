@@ -2,13 +2,14 @@ from utils import *
 from PIL import Image
 import numpy as np
 import pygame as pg
-import pygame.freetype as freetype
 
 class Ascii2D:
 
     GRADIENTS = Constants.GRADIENTS
     HEIGHT = Constants.HEIGHT
     WIDTH = Constants.WIDTH
+    LARGEUR_DIF = Constants.LARGEUR_DIF
+    GAME_FONT = Constants.GAME_FONT
 
     def rvb(self,color:int, mode=0):
         """Returns symbol using color code given by image.getpixel
@@ -19,37 +20,20 @@ class Ascii2D:
         Returns:
             symbol (str): Symbol
         """
-        ind=color*(len(self.GRADIENTS)-1)/255
-        if mode==1:
-            assert color!=1 or color!=0, f"color = {color}"
-            ind=color*(len(self.GRADIENTS)-1)
-            assert ind==int(ind), "RVB mode problem"
-        assert ind<=len(self.GRADIENTS)-1, "trhythdrtjx"
-        symbol = self.GRADIENTS[int(ind)]
-        return symbol
 
 
-    def pic_to_matrix2(self,longueur:int,largeur:int,filename:str,ext:str):
+    def pic_to_matrix(self,longueur:int,filename:str,ext:str):
         image = Image.open(f'img/{filename}.{ext}')
         image = image.convert('1')
         image.save(f'img/{filename}_black.{ext}')
         image = Image.open(f'img/{filename}_black.{ext}')
         
         long,larg = image.size
-        long,larg=list(np.linspace(0, long, longueur,dtype=int)),list(np.linspace(0, larg, largeur,dtype=int))
-        del long[-1]
-        del larg[-1]
+        largeur = int(longueur*larg/long)-self.LARGEUR_DIF
 
-        matrix = []
-        lst = []
-        for indexColor_largeur in larg:
-            for indexColor_longueur in long:
-                color = image.getpixel((int(indexColor_longueur),int(indexColor_largeur)))
-                lst.append(color)
-            matrix.append(lst)
-            lst=[]
+        long,larg=list(np.linspace(0, long-1, longueur,dtype=int)),list(np.linspace(0, larg-1, largeur,dtype=int))
 
-        return matrix
+        return [[image.getpixel((int(indexColor_longueur),int(indexColor_largeur))) for indexColor_longueur in long] for indexColor_largeur in larg]
 
     def pic_to_matrix(self,longueur:int,largeur:int,filename:str,ext:str):
         image = Image.open(f'img/{filename}.{ext}')
@@ -58,6 +42,7 @@ class Ascii2D:
         image = Image.open(f'img/{filename}_black.{ext}')
 
         return np.asarray(image.resize((longueur, largeur), resample=2))
+
 
     def pic_to_matrix3(self,longueur:int,largeur:int,image):
         return np.asarray(image.resize((longueur, largeur), resample=2))
@@ -104,13 +89,8 @@ class Ascii2D:
 
         pg.init()
         screen = pg.display.set_mode((self.WIDTH, self.HEIGHT))
-        GAME_FONT = freetype.SysFont('Consolas', 12, bold=True)
         running =  True
 
-        while running:
-            for event in pg.event.get():
-                if event.type == pg.QUIT:
-                    running = False
 
             screen.fill((0,0,0))
             y = 100
@@ -119,11 +99,28 @@ class Ascii2D:
                 screen.blit(text_surface, (100, y))
                 y+=5
 
-            pg.display.flip()
+        screen.fill((0,0,0))
+        y = 100
+        for i in modified_matrix:
+            text_surface,_ = self.GAME_FONT.render("".join([str(k) for k in i]), (255, 255, 255))
+            screen.blit(text_surface, (200, y))
+            y+=12
+
 
         pg.quit()
         
 
+        pg.display.flip()
+
+        screen.fill((0,0,0))
+        #pg.quit()
+
+'''
+dimensions = Images.dimensions(Images,'zemmour','jpg')
+matrix = Ascii2D.pic_to_matrix(Ascii2D,210,'zemmour','jpg')
+modified_matrix = Ascii2D.transform(Ascii2D,matrix)
+Ascii2D.display(Ascii2D,modified_matrix)
+'''
 
 if __name__=='__main__':
     filename='test2.png'
