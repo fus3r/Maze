@@ -20,7 +20,15 @@ class Ascii2D:
         Returns:
             symbol (str): Symbol
         """
-
+        ind=color*(len(self.GRADIENTS)-1)/255
+        assert ind<len(self.GRADIENTS), "GORGE"
+        if mode==1:
+            assert color!=1 or color!=0, f"color = {color}"
+            ind=color*(len(self.GRADIENTS)-1)
+            assert ind==int(ind), "RVB mode problem"
+        assert ind<=len(self.GRADIENTS)-1, "trhythdrtjx"
+        symbol = self.GRADIENTS[int(ind)]
+        return symbol
 
     def pic_to_matrix(self,longueur:int,filename:str,ext:str):
         image = Image.open(f'img/{filename}.{ext}')
@@ -35,7 +43,7 @@ class Ascii2D:
 
         return [[image.getpixel((int(indexColor_longueur),int(indexColor_largeur))) for indexColor_longueur in long] for indexColor_largeur in larg]
 
-    def pic_to_matrix(self,longueur:int,largeur:int,filename:str,ext:str):
+    def pic_to_matrix2(self,longueur:int,largeur:int,filename:str,ext:str):
         image = Image.open(f'img/{filename}.{ext}')
         image = image.convert('1')
         image.save(f'img/{filename}_black.{ext}')
@@ -91,29 +99,35 @@ class Ascii2D:
         screen = pg.display.set_mode((self.WIDTH, self.HEIGHT))
         running =  True
 
-
+        while running:
+            """
             screen.fill((0,0,0))
             y = 100
             for i in modified_matrix:
-                text_surface, rect = GAME_FONT.render(i, (255, 255, 255)) #TODO : ajouter des couleurs et transparence !!!!
+                text_surface, rect = self.GAME_FONT.render(i, (255, 255, 255)) #TODO : ajouter des couleurs et transparence !!!!
                 screen.blit(text_surface, (100, y))
                 y+=5
+            """
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    running = False
 
-        screen.fill((0,0,0))
-        y = 100
-        for i in modified_matrix:
-            text_surface,_ = self.GAME_FONT.render("".join([str(k) for k in i]), (255, 255, 255))
-            screen.blit(text_surface, (200, y))
-            y+=12
+            
+            screen.fill((0,0,0))
+            y = 100
+            for i in modified_matrix:
+                text_surface,_ = self.GAME_FONT.render("".join([str(k) for k in i]), (255, 255, 255))
+                screen.blit(text_surface, (200, y))
+                y+=12
 
-
+            pg.display.flip()
         pg.quit()
         
 
-        pg.display.flip()
+        
 
-        screen.fill((0,0,0))
-        #pg.quit()
+        
+        
 
 '''
 dimensions = Images.dimensions(Images,'zemmour','jpg')
@@ -123,8 +137,7 @@ Ascii2D.display(Ascii2D,modified_matrix)
 '''
 
 if __name__=='__main__':
-    filename='test2.png'
-    image = Image.open(f'img/{filename}')
-    image = image.convert('1')
-    Ascii2D.display_image(Ascii2D,image)
+    matrix = Ascii2D.pic_to_matrix(Ascii2D,210,'test2','png')
+    modified_matrix = Ascii2D.transform(Ascii2D,matrix)
+    Ascii2D.display(Ascii2D,modified_matrix)
 
