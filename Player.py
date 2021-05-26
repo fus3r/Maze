@@ -1,3 +1,4 @@
+from main_2D import *
 import numpy as np
 from PIL import Image
 class Player:
@@ -103,9 +104,25 @@ class Player:
     
         return render_image
 
-    def test(self):
-        img = Image.fromarray(self.generate_image())
-        img.show()
+    def rotate(self, theta):
+        dx, dy = self.dir[0], self.dir[1]
+        self.dir[0]=1
+        self.dir[1] = -self.dir[0]*np.tan(theta+np.arctan(dx/dy))
 
-if __name__=='__main__':
-    print('Hi')
+    def test(self):
+        for _ in range(5):
+            img=self.generate_image()
+            img=Image.fromarray(img, mode='L')
+            img=img.resize((800, 600), resample=Image.NEAREST)
+            img.show()
+            self.rotate(.1)
+
+
+
+
+         
+            
+
+        
+
+

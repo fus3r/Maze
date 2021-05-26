@@ -11,7 +11,7 @@ class Ascii2D:
     LARGEUR_DIF = Constants.LARGEUR_DIF
     GAME_FONT = Constants.GAME_FONT
 
-    def rvb(self,color:int):
+    def rvb(self,color:int, mode=0):
         """Returns symbol using color code given by image.getpixel
 
         Args:
@@ -20,12 +20,6 @@ class Ascii2D:
         Returns:
             symbol (str): Symbol
         """
-
-        try:
-            symbol = self.GRADIENTS[int(color*len(self.GRADIENTS)/255)]
-        except:
-            symbol = self.GRADIENTS[-1]
-        return symbol
 
 
     def pic_to_matrix(self,longueur:int,filename:str,ext:str):
@@ -41,17 +35,20 @@ class Ascii2D:
 
         return [[image.getpixel((int(indexColor_longueur),int(indexColor_largeur))) for indexColor_longueur in long] for indexColor_largeur in larg]
 
-    """
-    def pic_to_matrix2(self,longueur:int,largeur:int,filename:str,ext:str):
+    def pic_to_matrix(self,longueur:int,largeur:int,filename:str,ext:str):
         image = Image.open(f'img/{filename}.{ext}')
         image = image.convert('1')
         image.save(f'img/{filename}_black.{ext}')
         image = Image.open(f'img/{filename}_black.{ext}')
 
         return np.asarray(image.resize((longueur, largeur), resample=2))
-    """
 
-    def transform(self,matrix:list):
+
+    def pic_to_matrix3(self,longueur:int,largeur:int,image):
+        return np.asarray(image.resize((longueur, largeur), resample=2))
+
+
+    def transform(self,matrix:list, mode=0):
         """Transform image (any extension) to ASCII Art
 
         Args:
@@ -59,35 +56,48 @@ class Ascii2D:
             largeur (int): Width desired
             filename (str): Filename
             ext (str): Filename extension
+            mode (int): type d'encodage de pixels
+                0: [0;255]
+                1: [|0, 1|]
 
         Returns:
             None:
         """
 
+        h, w = len(matrix), len(matrix[0])
+        res=['' for j in range(h)] #TODO creer avec np
         #assert (longueur<long and largeur<larg), "Invalid width or length"
-        longueur = len(matrix[0])
-        largeur = len(matrix)
 
         #modified = [[0]*longueur for _ in range(largeur)]
-    
+        if mode==1:
+            coef=255
         
-        for indexModified_longueur in range(longueur):
-            for indexModified_largeur in range(largeur):
-                matrix[indexModified_largeur][indexModified_longueur] = self.rvb(self,matrix[indexModified_largeur][indexModified_longueur])
-                
-        
-        
-        return matrix
+        for j in range(h):
+            for i in range(w):
+                res[j] += self.rvb(self, matrix[j][i], mode=mode)
+        return res
 
+    def display_image(slef, image):
+        assert type(int(image.mode))==int
+        matrix = Ascii2D.pic_to_matrix3(Ascii2D,200, 200, image)
+        modified_matrix = Ascii2D.transform(Ascii2D,matrix, mode=int(image.mode))
+        Ascii2D.display(Ascii2D,modified_matrix)
+        
     def display(self,modified_matrix):
-        for i in modified_matrix:
-            print("".join([str(k) for k in i]))
+        """for i in modified_matrix:
+            print("".join([str(k) for k in i]))"""
 
         pg.init()
         screen = pg.display.set_mode((self.WIDTH, self.HEIGHT))
         running =  True
 
 
+            screen.fill((0,0,0))
+            y = 100
+            for i in modified_matrix:
+                text_surface, rect = GAME_FONT.render(i, (255, 255, 255)) #TODO : ajouter des couleurs et transparence !!!!
+                screen.blit(text_surface, (100, y))
+                y+=5
 
         screen.fill((0,0,0))
         y = 100
@@ -96,16 +106,25 @@ class Ascii2D:
             screen.blit(text_surface, (200, y))
             y+=12
 
+
+        pg.quit()
+        
+
         pg.display.flip()
 
         screen.fill((0,0,0))
         #pg.quit()
-        
+
 '''
 dimensions = Images.dimensions(Images,'zemmour','jpg')
 matrix = Ascii2D.pic_to_matrix(Ascii2D,210,'zemmour','jpg')
 modified_matrix = Ascii2D.transform(Ascii2D,matrix)
 Ascii2D.display(Ascii2D,modified_matrix)
-
 '''
+
+if __name__=='__main__':
+    filename='test2.png'
+    image = Image.open(f'img/{filename}')
+    image = image.convert('1')
+    Ascii2D.display_image(Ascii2D,image)
 

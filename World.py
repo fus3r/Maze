@@ -1,3 +1,5 @@
+from Player import Player
+import random as r
 import numpy as np
 from Player import Player
 import matplotlib.pyplot as plt
