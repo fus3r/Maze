@@ -25,6 +25,7 @@ a=np.array
 plt.show()
 while 1:
     image=w.show_image()
+    
     image=a(image, dtype=np.uint8)
     if plt.waitforbuttonpress():
         print('Image type', type(image), type(image[0]), type(image[0][0]))

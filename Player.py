@@ -80,13 +80,13 @@ class Player:
         
         if distance is None:
             return None
-        return self.size[1]*self.screen_dist*(2-self.height)/self.screen_scale/(distance-self.screen_dist), self.size[1]*self.screen_dist*(self.height)/self.screen_scale/(distance-self.screen_dist)
+        return int(self.cam_size[1]*self.screen_dist*(2-self.height)/self.screen_scale/(distance-self.screen_dist)), int(self.cam_size[1]*self.screen_dist*(self.height)/self.screen_scale/(distance-self.screen_dist))
 
     def generate_image(self, walls):
         background_col=(0, 0, 0)
         wall_col=(255, 255, 255)
         w, h = self.cam_size
-        render_image=[[0 for i in range(w)] for j in range(h)]#TODO : faire avec np
+        render_image=[[(0, 0, 0) for i in range(w)] for j in range(h)]#TODO : faire avec np
         assert (w, h)==(len(render_image[0]), len(render_image))
         c=0
         
@@ -97,7 +97,7 @@ class Player:
             dist=None
             for wall in walls:
                 #Init
-                col=0
+                col=(0, 0, 0)
                 #Computing
                 A, B = wall[0], wall[1]                 
                 s=self.screen_dist
@@ -125,10 +125,17 @@ class Player:
 
         assert len(colors)==self.cam_size[0]
         assert len(colors)==len(l)
+        sum=0
+        for i in range(len(render_image)-1):
+            sum+=len(render_image[i])-len(render_image[i+1])
+        assert sum==0
+        
         for i in range(len(colors)):
+            if l[i] is None:
+                continue
             for j in range(l[i][0], l[i][1]+1):
                 
-                render_image[j][i]=col[i]
+                render_image[j][i]=colors[i]
             
 
         print(f"C {c}, {c/w/h}") 
