@@ -1,8 +1,5 @@
-
 import numpy as np
 from PIL import Image
-from utils import *
-
 class Player:
     def __init__(self)-> None:
         self.pos=np.array([0, 0])
@@ -36,59 +33,31 @@ class Player:
     def set_dir_from_angle(self, theta):
         self.dir= np.cos(theta),np. sin(theta)
         self.dir=np.array(self.dir)
-    
-    def intersection(self, position, direction, segment):
-        '''
-            Calcule l'intersection entre un segment et un rayon de vecteur directeur direction et passant par position
-
-        '''
-        A, B= segment
-        P=position
-        d=direction
-        I=0
-
-        assert sq(d)!=0
-        assert sq(A-P)!=0
-        assert sq(B-A)!=0
-        alpha, theta=angle_between(A-P, d),angle_between(B-A, d)
-
-        if np.sin(alpha)==0:
-            return None
-        
-        I=A+(B-A)/norm(B-A) * norm(A-P)*np.sin(theta)*np.sin(alpha)
-
-        if np.dot(B-A, I-A)<0:
-            return None
-
-        return I
-
-    def col(self, distance):
-        '''
-        Retourne la couleur d'un pixel en fonction de la distance
-        '''
-        if distance ==None:
-            return (0, 0, 0)
-        return tuple([int(255*(1-distance/self.render_distance))]*3)
-
 
     def generate_image(self, walls):
-        background_col=(0, 0, 0)
+        background_col=(0, 0, 0)        
         wall_col=(255, 255, 255)
         w, h = self.cam_size
         render_image=[[0 for i in range(w)] for j in range(h)]#TODO : faire avec np
         assert (w, h)==(len(render_image[0]), len(render_image))
         c=0
-        
-        l=[]
         colors=[]
+        
         for i in range(w):
             #on va faire du raytracing
-            dist=None
+            dist=10000000
             for wall in walls:
                 #Init
                 col=0
+                
+                a=np.array
+                sq=lambda x:np.dot(x, x)
+                orth=lambda s:a([-s[1], s[0]])
+                norm=lambda x:((x[0])**2+(x[1])**2)**.5
+                angle_between = lambda a, b : np.arccos(np.dot(a, b)/(norm(a)*norm(b)))
+
                 #Computing
-                A, B = wall[0], wall[1]                 
+                A, B = wall[0], wall[1]                    
                 s=self.cam_focal_distance
                 d=a(self.dir)
                 d_=orth(d)
@@ -97,44 +66,48 @@ class Player:
                 d_=d_/norm(d_)
 
                 K=P+s*d+d_*(i-w/2)*self.screen_scale/w
-                I=self.intersection(P, K-P, [A, B])
-                if I is None:
+                #print(f'A, P, K : {A, P, K }')
+                assert sq(K)==sq(K)
+                if sq(A-P)==0:
+                    colors.append(wall_col)
                     continue
-                print(I)
-                new_dist=norm(I-P) #norm(I-K) ???
-                print(new_dist)
+                papk, abpk=angle_between(A-P, K-P),angle_between(B-A, K-P)
+                #print(f'papk, abpk: {papk, abpk}')
+                if np.sin(abpk)==0:
+                    colors.append(background_col)
+                    continue
+                assert papk==papk and abpk==abpk, (papk, abpk)
+                AI = (B-A)*norm(P-A)*np.sin(papk)/np.sin(abpk)/norm(B-A)
+                I = A+AI
+                assert sq(AI)==sq(AI)
+                if sq(A==P) == 2:
+                    print(f'A in P : {A} in {P}')
+                    c+=1
+                    colors.append(wall_col)
+                    continue
 
-                if dist is None:
-                    dist=new_dist
-                elif dist<new_dist:
-                    dist=new_dist
-                
-            colors.append(self.col(dist)) 
+                #print(f'AI: {AI}')
+                #print(f'I: {I}')
+                dist=norm(I-P) #norm(I-K) ???
+                if dist>self.render_distance:
+                    colors.append(background_col)
+                    continue
+                col = 255*(1-dist/self.render_distance)
+                assert 0<=col<=255, f'col : {col,I, P,AI}'
+                hm=2
+                if type(col)!=int: col=int(col)
+                colors.append(col)
+
+                assert len(colors)==self.cam_size[0],f'{len(colors), self.cam_size}'
 
 
         print(f"C {c}, {c/w/h}") 
     
         return render_image
 
-    def rotate(self, theta):
-        dx, dy = self.dir[0], self.dir[1]
-        self.dir[0]=1
-        self.dir[1] = -self.dir[0]*np.tan(theta+np.arctan(dx/dy))
-
     def test(self):
-        for _ in range(5):
-            img=self.generate_image()
-            img=Image.fromarray(img, mode='L')
-            img=img.resize((800, 600), resample=Image.NEAREST)
-            img.show()
-            self.rotate(.1)
+        img = Image.fromarray(self.generate_image())
+        img.show()
 
-
-
-
-         
-            
-
-        
-
-
+if __name__=='__main__':
+    print('Hi')

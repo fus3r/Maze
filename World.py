@@ -27,7 +27,7 @@ while 1:
     image=w.show_image()
     image=a(image, dtype=np.uint8)
     if plt.waitforbuttonpress():
-        print('Image type', type(image), type(image[0]), type(image[0][0]), type(image[0][0][0]))
+        print('Image type', type(image), type(image[0]), type(image[0][0]), type(image[0][0]))
         plt.imshow(image)
         w.player.pos+=a([1, 0], dtype=np.uint8)
         w.player.print_infos()

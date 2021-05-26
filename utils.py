@@ -1,3 +1,5 @@
+import numpy as np
+
 class Constants:
     import pygame.freetype as freetype
     freetype.init()
@@ -31,3 +33,11 @@ class Files:
         """
         shutil.rmtree(path)
         os.mkdir(path)
+
+
+
+a=np.array
+sq=lambda x:np.dot(x, x)
+orth=lambda s:a([-s[1], s[0]])
+norm=lambda x:((x[0])**2+(x[1])**2)**.5
+angle_between = lambda a, b : np.arccos(np.dot(a, b)/(norm(a)*norm(b)))#à mettre dans utils
