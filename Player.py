@@ -9,8 +9,10 @@ class Player:
         self.dir=np.array([15, 6])
         self.cam_size = 100, 40
         self.render_distance=10
-        self.cam_focal_distance=.2
+        self.screen_dist=.2
         self.screen_scale=1
+
+        self.height=1.8#en m
 
     def print_infos(self):
         print('='*10+' PLAYER INFOS '+ '='*10)
@@ -21,7 +23,7 @@ class Player:
         
         print(f'cam_size {self.cam_size}')
         print(f'render_distance {self.render_distance}')
-        print(f'cam_focal_distance {self.cam_focal_distance}')
+        print(f'screen_dist {self.screen_dist}')
         print(f'screen_scale {self.screen_scale}')
     def rotate(self, theta):
         if (0, 0) in self.dir:
@@ -70,6 +72,15 @@ class Player:
             return (0, 0, 0)
         return tuple([int(255*(1-distance/self.render_distance))]*3)
 
+    def seg(self, distance):
+        '''
+        Return le tuple de coordonnées en y de l'image qui doivent être colorés dans une même couleur
+
+        '''
+        
+        if distance is None:
+            return None
+        return self.size[1]*self.screen_dist*(2-self.height)/self.screen_scale/(distance-self.screen_dist), self.size[1]*self.screen_dist*(self.height)/self.screen_scale/(distance-self.screen_dist)
 
     def generate_image(self, walls):
         background_col=(0, 0, 0)
@@ -89,7 +100,7 @@ class Player:
                 col=0
                 #Computing
                 A, B = wall[0], wall[1]                 
-                s=self.cam_focal_distance
+                s=self.screen_dist
                 d=a(self.dir)
                 d_=orth(d)
                 P=a(self.pos)
@@ -109,8 +120,16 @@ class Player:
                 elif dist<new_dist:
                     dist=new_dist
                 
-            colors.append(self.col(dist)) 
+            colors.append(self.col(dist))
+            l.append(self.seg(dist))
 
+        assert len(colors)==self.cam_size[0]
+        assert len(colors)==len(l)
+        for i in range(len(colors)):
+            for j in range(l[i][0], l[i][1]+1):
+                
+                render_image[j][i]=col[i]
+            
 
         print(f"C {c}, {c/w/h}") 
     
