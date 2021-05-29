@@ -12,6 +12,9 @@ class MazeGen:
                 full[i]
             except:
                 del i
+        for i in neighbors:
+            if i[0]<0 or i[1]<0:
+                    del i
         return neighbors
 
     def generate_maze(self,x,y):
@@ -28,11 +31,17 @@ class MazeGen:
         full[x0][y0] = " "
         neighbors = MazeUtils.neighbors(x0,y0,diagonals=False)
         neighbors = self.in_maze(self,full,neighbors)
+        print(neighbors)
         new_start_point = r.choice(neighbors)
-        neighbors.append((x0,y0))
         if previous_neighbors is not None:
-            while new_start_point in previous_neighbors:
+            while new_start_point in previous_neighbors and MazeUtils.neighbors(new_start_point[0],new_start_point[1],diagonals=False).count(" ")>=2:
                 new_start_point = r.choice(neighbors)
+        print(new_start_point,MazeUtils.neighbors(new_start_point[0],new_start_point[1],diagonals=False).count(" "))
+        """
+        neighbors = MazeUtils.neighbors(x0,y0,diagonals=True)
+        neighbors = self.in_maze(self,full,neighbors)
+        """
+        neighbors.append((x0,y0))
         for i in full:  print(*i)
         print("\n")
         return self.maze(self,full,new_start_point,neighbors)
