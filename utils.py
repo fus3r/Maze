@@ -34,7 +34,11 @@ class Files:
         shutil.rmtree(path)
         os.mkdir(path)
 
-
+class MazeUtils:
+    def neighbors(x,y,diagonals:bool):
+        if diagonals:
+            return [(i,j) for i in [x-1,x,x+1] for j in [y-1,y,y+1]]
+        return [(x-1,y),(x+1,y),(x,y+1),(x,y-1)]
 
 a=np.array
 sq=lambda x:np.dot(x, x)
