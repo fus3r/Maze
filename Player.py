@@ -1,74 +1,44 @@
-from main_2D import *
+
 import numpy as np
+from PIL import Image
+from utils import *
 
 class Player:
+    def __init__(self)-> None:
+        self.pos=np.array([0, 0, 0]) #Position 3D de Player
+        self.dir=np.array([15, 6, 1]) #Direction du regard
+        self.cam_size = 100, 40 #DImensions de l'écran en pixels
+        self.render_distance=10 #Distance on sen fout pr le moment
+        self.screen_dist=.2 #DIstance entre player et écran
+        self.screen_scale=1 #
 
-    def __init__(self, world):        
-        self.pos = (0, 0) #position du Player, initialement 0, 0 le centre de la map
-        self.dir = np.array([1, 0])
-        self.world=world
-        self.render_distance=10
-        self.cam_size = 100, 50 #en pixels
-        self.cam_scale = 3 #longueur réelle dans le monde de la caméra
-        self.cam_focal_dist = 1
-        pass
+        self.height=1.8 #
 
-    def get_color_from_distance(self, dist):
-        M=255 #valeur maximale du pixel
+    def print_infos(self):
+        print('='*10+' PLAYER INFOS '+ '='*10)
+        print(f'Position {self.pos}')
+        print(f'dir {self.dir}')
+        print(f'CAMERA INFOS')
+        print()
+        print(f'cam_size {self.cam_size}')
+        print(f'render_distance {self.render_distance}')
+        print(f'screen_dist {self.screen_dist}')
+        print(f'screen_scale {self.screen_scale}')
 
-        return M*(1-dist/self.render_distance)
+
     def generate_image(self):
+        
+
+
+        return
+    
+    def col(self, distance):
         '''
-        --> matrice nombres [0, 255] #TODO : rajouter couleurs
+        Retourne la couleur d'un pixel en fonction de la distance
         '''
-        render_image=[[0 for i in range(self.cam_size[0])] for j in range(self.cam_size[1])]
-        render_image=np.array(render_image)
-        for i in range(self.cam_size[0]):
-            for j in range(self.cam_size[1]):
-                for wall in self.world.walls:
-                    #mur d'équation ax+by+c=0
-                    #rayon d'équation rax+rby+rc=0
-                    Ax, Ay, Bx, By = wall[0][0], wall[0][1], wall[1][0], wall[1][1]
-                    a, b, c = By-Ay, Bx-Ax, Ay*By-Ax*Ay
-                    w = self.cam_size[0]
-                    norm=((self.dir[0])**2+(self.dir[1])**2)**.5
-                    assert norm>0
-                    self.dir=self.dir/norm
-                    dx, dy = self.pos[0]+self.cam_focal_dist*self.dir[0]-self.dir[1]*(i-w/2)*self.cam_scale/w,     self.pos[1]+self.cam_focal_dist*self.dir[1]+self.dir[0]*(i-w/2)*self.cam_scale/w        
-                    aa, bb, cc = -dy, dx, dy*self.pos[0]-dx*self.pos[1]
-
-
-                    p, q = aa*c-a*cc, a*bb-aa*b
-                    if q==0:
-                        continue
-                    inter = (b*p/q+c)/-a, p/q
-                    inter=np.array(inter)
-                    dist=((inter[0]-self.pos[0])**2+(inter[1]-self.pos[1])**2)**.5
-                    if dist>self.render_distance:
-                        continue
-
-
-
-                    col = self.get_color_from_distance(dist)#la couleur de ce pixel
-                    AB=2
-                    if abs(j-self.cam_size[1]/2)>=self.cam_size[1]*AB*self.cam_focal_dist/dist/self.cam_scale:
-                        col=0
-                        continue
-
-
-
-                    if self.dir.dot(inter-self.pos)<0:
-                        continue
-                    col=int(col)
-                    assert col>=0 and col<2**8, f"col={col}"
-
-                    render_image[j][i]=col
-        return render_image
-
-    def rotate(self, theta):
-        dx, dy = self.dir[0], self.dir[1]
-        self.dir[0]=1
-        self.dir[1] = -self.dir[0]*np.tan(theta+np.arctan(dx/dy))
+        if distance ==None:
+            return (0, 0, 0)
+        return tuple([int(255*(1-distance/self.render_distance))]*3)
 
     def test(self):
         for _ in range(5):
@@ -77,13 +47,4 @@ class Player:
             img=img.resize((800, 600), resample=Image.NEAREST)
             img.show()
             self.rotate(.1)
-
-
-
-
-         
-            
-
-        
-
 
