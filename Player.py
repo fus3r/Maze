@@ -2,6 +2,7 @@
 import numpy as np
 from PIL import Image
 from utils import *
+from vecmaths import *
 
 class Player:
     def __init__(self)-> None:
@@ -26,8 +27,20 @@ class Player:
         print(f'screen_scale {self.screen_scale}')
 
 
-    def generate_image(self):
+    def generate_image(self, walls):
+        """
+            Return une image (colorée) de ce que voit le joueur en fonction de l'ensemble des murs/objets du monde
+                walls : une liste d'objets de type Wall
+
+
+            Return result : une list w X h X 3, les pixels sont codés chacun sur 24 bits soit 3 channels RGB de 256 valeurs possibles
+        """
         
+        for wall in walls:
+            #Projeter tous les points de wall sur l'écran virtuel
+            l=[]
+            for vertex in wall.vertices:
+                l.append()
 
 
         return

@@ -27,7 +27,7 @@ class Ascii2D:
             ind=color*(len(self.GRADIENTS)-1)
             assert ind==int(ind), "RVB mode problem"
         assert ind<=len(self.GRADIENTS)-1, "trhythdrtjx"
-        symbol = self.GRADIENTS[int(ind)]
+        symbol = self.GRADIENTS[int(ind)] 
         return symbol
 
     def pic_to_matrix(self,longueur:int,filename:str,ext:str):
